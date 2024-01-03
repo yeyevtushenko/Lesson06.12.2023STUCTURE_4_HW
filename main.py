@@ -79,4 +79,75 @@ class TaxInspectDB:
             if person.city == city:
                 print(f"Особа з персональним кодом{personal_code} живе в  {city}:\n{person}\n")
 
+if __name__ == "__main__":
+    db = TaxInspectDB()
 
+    while True:
+        print("\nМеню:")
+        print("1. Додати особу")
+        print("2. Видалити особу")
+        print("3. Додати штраф")
+        print("4. Видалити штраф")
+        print("5. Оновити інформацію про особу")
+        print("6. Вивести базу даних")
+        print("7. Вивести за персональним кодом")
+        print("8. Вивести за типом штрафу")
+        print("9. Вивести за містом")
+        print("0. Вийти")
+
+        choice = input("Введіть свій вибір: ")
+
+        if choice == "1":
+            personal_code = input("Введіть персональний код: ")
+            name = input("Введіть ім'я: ")
+            city = input("Введіть місто: ")
+            person = Person(personal_code, name, city)
+            db.add_person(person)
+
+        elif choice == "2":
+            personal_code = input("Введіть персональний код для видалення: ")
+            db.remove_person(personal_code)
+
+        elif choice == "3":
+            personal_code = input("Введіть персональний код: ")
+            penalty_type = input("Введіть тип штрафу: ")
+            amount = float(input("Введіть суму штрафу: "))
+            city = input("Введіть місто: ")
+            penalty = Penalty(penalty_type, amount, city)
+            db.add_penalty(personal_code, penalty)
+
+        elif choice == "4":
+            personal_code = input("Введіть персональний код: ")
+            penalty_type = input("Введіть тип штрафу для видалення: ")
+            penalties = [penalty for penalty in db.people[personal_code].penalties if penalty.penalty_type == penalty_type]
+            if penalties:
+                db.remove_penalty(personal_code, penalties[0])
+            else:
+                print(f"Штрафів з типом {penalty_type} не знайдено")
+
+        elif choice == "5":
+            personal_code = input("Введіть персональний код: ")
+            name = input("Введіть нове ім'я: ")
+            city = input("Введіть нове місто: ")
+            db.update_person_info(personal_code, name, city)
+
+        elif choice == "6":
+            db.print_db()
+
+        elif choice == "7":
+            personal_code = input("Введіть персональний код для виведення: ")
+            db.print_by_code(personal_code)
+
+        elif choice == "8":
+            penalty_type = input("Введіть тип штрафу для виведення: ")
+            db.print_by_penalty_type(penalty_type)
+
+        elif choice == "9":
+            city = input("Введіть місто для виведення: ")
+            db.print_by_city(city)
+
+        elif choice == "0":
+            break
+
+        else:
+            print("Невірний вибір. Будь ласка, введіть дійсну опцію.")
